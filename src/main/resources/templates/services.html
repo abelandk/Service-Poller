@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.com">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Services</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <table class="table table-bordered" style="width: 100%">
+            <thead>
+            <tr>
+                <th>name</th>
+                <th>url</th>
+                <th>status</th>
+                <th>updated on</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="service : ${services}">
+                    <td th:text="${service.url}"></td>
+                    <td th:text="${service.name}"></td>
+                    <td th:text="${service.status}"></td>
+                    <td th:text="${#dates.format(service.lastChange, 'dd-MMM-yyyy HH:mm:ss')}"></td>
+                    <td>
+                        <a th:href="@{'/services/delete/' + ${service.id}}"><p class="text-danger" th:text="Delete"/></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col">
+                <h2 class="mt-5">Add a Service to Poll</h2>
+                <p class="text-danger" th:text="${error}"/>
+                <form th:action="@{/services/addService}" th:onsubmit="return validateUrl()" method="post" th:id="addService">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="form-group">
+                                <label for="url">Url *</label>
+                                <input id = "url" name="url" type="text" placeholder="type url" required
+                                       class="form-control required">
+                                <p id="validUrl" class="alert alert-danger" hidden></p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name">Name *</label>
+                                <input id = "name" name="name" type ="text" placeholder="type name" required
+                                       class="form-control required">
+                            </div>
+                        </div>
+                    </div>
+                    <button th:id="submit" class="btn btn-primary" type="submit">Add</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white">Copyright &copy; Kry 2021</p>
+        </div>
+    </footer>
+
+    <script>
+        function validateUrl() {
+            let url = document.getElementById("url").value;
+            let validUrl = false;
+            try {
+                validUrl = Boolean(new URL(url));
+            }
+            catch(e) {
+                validUrl = false;
+            }
+
+            if(!validUrl) {
+                document.getElementById("validUrl").hidden = false;
+                document.getElementById("validUrl").innerHTML = "Not Valid Url";
+            }
+            return validUrl;
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+</body>
+</html>
